@@ -2,10 +2,12 @@ import React from "react"
 import { BrowserRouter , Routes , Route , Navigate } from "react-router-dom"
 import BotGame from "./Pages/BotGame.jsx"
 import Home from "./Pages/Home.jsx"
+import NavBar from "./components/NavBar.jsx"
 
 export default function App(){
   return(
     <BrowserRouter>
+      <NavBar/>
       <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/bot" element={<BotGame/>} />
