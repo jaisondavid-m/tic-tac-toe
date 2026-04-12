@@ -5,7 +5,7 @@ import { HUMAN , BOT  } from "../Constants/game"
 import reducer , { initialState } from "../utils/reducer"
 
 
-function Game() {
+function BotGame() {
     const [ state , dispatch ] = useReducer( reducer , initialState )
     const { board , turn , winner , draw } = state
     const handleMove = (i) => {
@@ -43,4 +43,4 @@ function Game() {
     )
 }
 
-export default Game
+export default BotGame
