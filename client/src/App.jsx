@@ -1,18 +1,33 @@
 import React from "react"
-import { BrowserRouter , Routes , Route , Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import BotGame from "./Pages/BotGame.jsx"
 import Home from "./Pages/Home.jsx"
-import NavBar from "./components/NavBar.jsx"
+import Login from "./Pages/Login.jsx"
+import { AuthProvider } from "./context/AuthContext.jsx"
+import ProtectedRoute from "./routes/ProtectedRoute.jsx"
+import ProtectedLayout from "./Layout/ProtectedLayout.jsx"
+import PublicRoute from "./routes/PublicRoute.jsx"
 
-export default function App(){
-  return(
+export default function App() {
+  return (
     <BrowserRouter>
-      <NavBar/>
-      <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="/bot" element={<BotGame/>} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route
+            element={
+              <ProtectedRoute>
+                <ProtectedLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/home" element={<Home />} />
+            <Route path="/bot" element={<BotGame />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

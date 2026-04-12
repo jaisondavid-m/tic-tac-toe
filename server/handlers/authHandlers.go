@@ -24,15 +24,14 @@ func GoogleLogin(c *gin.Context) {
 	}
 
 	payload , err := idtoken.Validate(context.Background(),req.Token,GoogleClientID)
-
 	if err != nil {
 		c.JSON(http.StatusUnauthorized,gin.H{"message":"Invalid Google Token"})
 		return
 	}
 
-	name := payload.Claims["name"].(string)
-	email := payload.Claims["email"].(string)
-	picture := payload.Claims["picture"].(string)
+	name,_ := payload.Claims["name"].(string)
+	email,_ := payload.Claims["email"].(string)
+	picture,_ := payload.Claims["picture"].(string)
 
 	accessToken , _ := utils.GenerateAccessToken(name,email,picture)
 	refreshToken , _ := utils.GenerateRefreshToken(email)

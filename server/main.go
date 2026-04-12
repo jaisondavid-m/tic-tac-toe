@@ -1,4 +1,4 @@
-package mai
+package main
 
 import (
 	"log"
@@ -12,7 +12,7 @@ import (
 func main() {
 
 	err := godotenv.Load()
-	
+
 	if err != nil {
 		log.Println("No .env file Found")
 	}
