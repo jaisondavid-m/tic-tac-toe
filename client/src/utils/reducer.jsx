@@ -8,6 +8,7 @@ export const initialState = {
     turn: HUMAN,
     winner: null,
     draw: false,
+    difficulty: "MEDIUM"
 }
 
 function reducer( state , action ) {
@@ -20,10 +21,15 @@ function reducer( state , action ) {
         }
         case "BOT_MOVE": {
             const board = [...state.board]
-            const move = bestMove(board)
-            if (move !== null) board[move] = BOT
+            const move = bestMove(board,state.difficulty)
+            if (move !== null){
+                board[move] = BOT
+                return { ...state , board , turn: HUMAN }
+            } 
             return { ...state , board , turn: HUMAN }
         }
+        case "SET_DIFFICULTY":
+            return { ...state , difficulty: action.value }
         case "UPDATE": {
             const winner = CalculateWinner(state.board)
             const draw = !winner && state.board.every(Boolean)

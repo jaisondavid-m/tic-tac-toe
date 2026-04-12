@@ -12,6 +12,12 @@ function BotGame() {
         if (turn !== HUMAN) return
         dispatch({ type: "MOVE" , index: i })
     }
+    const handleDifficultChange = (e) => {
+        dispatch({
+            type: "SET_DIFFICULTY",
+            value: e.target.value
+        })
+    }
 
     useEffect(() => {
         dispatch({ type: "UPDATE" })
@@ -26,11 +32,20 @@ function BotGame() {
     const status = useMemo(() => {
         if(winner) return `Winner: ${winner}`
         if(draw) return "Draw Game"
-        return turn == HUMAN ? "Your Turn (X)" : "BOT is Thinking..."
+        return turn === HUMAN ? "Your Turn (X)" : "BOT is Thinking..."
     },[ winner , draw , turn ])
 
     return (
         <GameLayout title = "Tic Tac Toe" >
+            <select
+                value={state.difficulty}
+                onChange={handleDifficultChange}
+                className="px-4 py-2 border rounded-lg mb-4"
+            >
+                <option value="EASY">Easy</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HARD">Hard</option>
+            </select>   
             <Board board={board} onMove={handleMove} />
             <div className="mt-6 text-xl font-medium">{status}</div>
             <button
