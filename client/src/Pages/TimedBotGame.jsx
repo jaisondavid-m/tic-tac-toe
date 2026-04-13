@@ -65,9 +65,9 @@ function TimedBotGame() {
             const t = setTimeout(() => {
                 dispatch({ type: "BOT_MOVE" })
             }, 450)
-            return () => clearTimer(t)
+            return () => clearTimeout(t)
         }
-        return () => clearTimer
+        return () => clearTimer()
     }, [board, turn, winner, draw, state.gameStarted, state.showResult])
 
     useEffect(() => () => clearTimer(), [])

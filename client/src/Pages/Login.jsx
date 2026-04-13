@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { GoogleLogin } from "@react-oauth/google"
 import { useNavigate } from "react-router-dom"
 import { Gamepad2, Trophy, Zap } from "lucide-react"
-import { GoogleLoginAPI } from "../api/axios.js"
+import { GoogleLoginAPI , GuestLoginAPI  } from "../api/axios.js"
 import { useAuth } from "../context/AuthContext.jsx"
 import { FaGithub } from "react-icons/fa"
 
@@ -27,6 +27,15 @@ function Login() {
             `?client_id=${clientId}` +
             `&scope=user:email` +
             `&redirect_uri=http://localhost:5173/github/callback`
+    }
+    const handleGuestLogin = async () => {
+        try {
+            await GuestLoginAPI()
+            await checkAuth()
+            navigate("/home")
+        } catch (error) {
+            setError("Guest Login Failed")
+        }
     }
 
     return (
@@ -70,6 +79,12 @@ function Login() {
                     >
                         <FaGithub size={20} />
                         Continue With GitHub
+                    </button>
+                    <button
+                        onClick={handleGuestLogin}
+                        className="w-1/2 flex items-center justify-center gap-2 border border-white/20 py-3 rounded-xl font-semibold hover:bg-white/10 transition"
+                    >
+                        Continue as Guest
                     </button>
                 </div>
             </div>

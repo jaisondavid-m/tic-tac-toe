@@ -17,6 +17,10 @@ export const RefreshTokenAPI = () => {
     return API.post("/api/auth/refresh")
 }
 
+export const GuestLoginAPI = () => {
+    return API.post("/api/auth/guest")
+}
+
 export const LogoutAPI = () => {
     return API.post("/api/auth/logout")
 }

@@ -1,11 +1,15 @@
 import React , { useState } from "react"
-import { Link , useLocation } from "react-router-dom"
+import { Link , useLocation , useNavigate } from "react-router-dom"
 import { Menu , X , Gamepad2 } from "lucide-react"
 import { motion , AnimatePresence } from "framer-motion"
+import { LogoutAPI } from "../api/axios"
+import { useAuth } from "../context/AuthContext"
 
 function NavBar() {
     const [ open , setOpen ] = useState(false)
+    const navigate = useNavigate()
     const location = useLocation()
+    const { setUser } = useAuth()
 
     const navLinks = [
         { name: "Home" , path: "/" },
@@ -16,6 +20,16 @@ function NavBar() {
     ]
 
     const isActive = ( path ) => location.pathname === path
+
+    const handleLogout = async () => {
+        try {
+            await LogoutAPI()
+            setUser(null)
+            navigate("/login")
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <motion.header
@@ -67,15 +81,21 @@ function NavBar() {
                     <motion.div
                         whileHover={{ scale: 1.06 }}
                         whileTap={{ scale: 0.95 }}
-                        className="hidden md:block"
+                        className="hidden md:flex items-center gap-2"
                     >
                         <Link
                             to="/bot"
-                            className="px-5 py-2 rounded-full bg-white text-black font-semibold text-sm shadow-lg"
+                            className="px-4 py-1.5 rounded-full bg-white text-black font-semibold text-sm shadow-lg"
                         >
                             Start Game
                         </Link>
                     </motion.div>
+                    <button
+                        onClick={handleLogout}
+                        className="hidden md:block ml-2 px-4 py-1.5 rounded-full border border-white/20 text-white text-xs md:text-sm font-semibold hover:bg-white/10 transition"
+                    >
+                        Logout
+                    </button>
                     <button
                         onClick={() => setOpen(!open) }
                         className="md:hidden text-white"
@@ -126,6 +146,12 @@ function NavBar() {
                                     Start Game
                                 </Link>
                             </motion.div>
+                            <button
+                                onClick={handleLogout}
+                                className="block w-full text-center px-4 py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition"
+                            >
+                                LogOut
+                            </button>
                         </div>
                     </motion.div>
                 )}
