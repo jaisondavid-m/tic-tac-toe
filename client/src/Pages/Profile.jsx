@@ -14,7 +14,7 @@ export default function Profile() {
     const handleLogout = async () => {
         try {
             await LogoutAPI()
-            navigate("/")
+            navigate("/login")
         } catch (error) {
             console.error(error)
         }

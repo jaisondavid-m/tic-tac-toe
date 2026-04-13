@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { Gamepad2, Trophy, Zap } from "lucide-react"
 import { GoogleLoginAPI } from "../api/axios.js"
 import { useAuth } from "../context/AuthContext.jsx"
+import { FaGithub } from "react-icons/fa"
 
 function Login() {
     const navigate = useNavigate()
@@ -55,15 +56,19 @@ function Login() {
                         <p className="text-xs text-white/70">Challenge Bot</p>
                     </div>
                 </div>
-                <div className="mt-8 flex justify-center">
-                    <GoogleLogin
-                        onSuccess={handleSuccess}
-                        onError={() => setError("Google Login Failed")}
-                    />
+                <div className="mt-8 flex flex-col gap-4 items-center w-full">
+                    <div className="w-full flex justify-center">
+                        <GoogleLogin
+                            onSuccess={handleSuccess}
+                            onError={() => setError("Google Login Failed")}
+                        />
+                    </div>
+
                     <button
                         onClick={handleGitHubLogin}
-                        className="mt-4 w-full bg-white text-black py-3 rounded-xl font-semibold hover:opacity-90 transition"
+                        className="w-1/2 flex items-center justify-center gap-2 bg-white text-black py-3 rounded-xl font-semibold hover:opacity-90 transition tracking-tighter"
                     >
+                        <FaGithub size={20} />
                         Continue With GitHub
                     </button>
                 </div>

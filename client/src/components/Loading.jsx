@@ -2,7 +2,7 @@ import React from "react"
 import { motion } from "framer-motion"
 import { Gamepad2 } from "lucide-react"
 
-function Loading() {
+function Loading({text="Loading..."}) {
 
     const cells = Array(9).fill(null)
     
@@ -72,7 +72,7 @@ function Loading() {
                 transition={{ repeat: Infinity , duration: 1.5 }}
                 className="mt-8 text-sm md:text-base tracking-[0.4em] uppercase text-white/70 z-10"
             >
-                Loading...
+                {text}
             </motion.p>
         </div>
     )

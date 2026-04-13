@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { GitHubLoginAPI } from "../api/axios.js"
 import { useAuth } from "../context/AuthContext.jsx"
+import Loading from "../components/Loading.jsx"
 
 function GitHubCallback() {
 
@@ -33,7 +34,7 @@ function GitHubCallback() {
 
     return (
         <div>
-            Logging with github
+           <Loading text="Logging with github" /> 
         </div>
     )
 
