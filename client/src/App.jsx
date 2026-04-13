@@ -10,6 +10,8 @@ import PublicRoute from "./routes/PublicRoute.jsx"
 import Profile from "./Pages/Profile.jsx"
 import GitHubCallback from "./components/GitHubCallback.jsx"
 import StreakPage from "./Pages/StreakPage.jsx"
+import NotFound from "./Pages/NotFound.jsx"
+import TimedBotGame from "./Pages/TimedBotGame.jsx"
 
 export default function App() {
   return (
@@ -28,10 +30,11 @@ export default function App() {
             <Route path="/profile" element={<Profile/>} />
             <Route path="/home" element={<Home />} />
             <Route path="/bot" element={<BotGame />} />
+            <Route path="/timedbot" element={<TimedBotGame/>} />
             <Route path="/streak" element={<StreakPage/>} />
           </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

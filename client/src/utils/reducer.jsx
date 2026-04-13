@@ -28,7 +28,8 @@ function reducer( state , action ) {
                 ...initialState,
                 gameStarted: false,
                 showResult: false,
-                winningLine: null
+                winningLine: null,
+                timedOut: false,
             }
         case "RESTART_MATCH":
             return {
@@ -39,12 +40,21 @@ function reducer( state , action ) {
                 draw:false,
                 showResult:false,
                 winningLine: null,
+                timedOut:false,
             }
         case "MOVE": {
             if (state.board[action.index] || state.winner) return state
             const board = [...state.board]
             board[action.index] = HUMAN
             return { ...state , board , turn: BOT  }
+        }
+        case "TIMEOUT_LOSS": {
+            return {
+                ...state,
+                winner: BOT,
+                timedOut: true,
+                showResult:true
+            }
         }
         case "BOT_MOVE": {
             const board = [...state.board]
