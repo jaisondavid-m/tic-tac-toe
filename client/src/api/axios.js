@@ -9,6 +9,10 @@ export const GoogleLoginAPI = (token) => {
     return API.post("/api/auth/google",{token})
 }
 
+export const GitHubLoginAPI = (code) => {
+    return API.post("/api/auth/github",{code})
+}
+
 export const RefreshTokenAPI = () => {
     return API.post("/api/auth/refresh")
 }

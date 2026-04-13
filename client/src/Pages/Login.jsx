@@ -1,13 +1,13 @@
-import React , { useState } from "react"
+import React, { useState } from "react"
 import { GoogleLogin } from "@react-oauth/google"
 import { useNavigate } from "react-router-dom"
-import { Gamepad2 , Trophy , Zap } from "lucide-react"
+import { Gamepad2, Trophy, Zap } from "lucide-react"
 import { GoogleLoginAPI } from "../api/axios.js"
 import { useAuth } from "../context/AuthContext.jsx"
 
 function Login() {
     const navigate = useNavigate()
-    const [ error , setError ] = useState("")
+    const [error, setError] = useState("")
     const { checkAuth } = useAuth()
     const handleSuccess = async (credentialResponse) => {
         try {
@@ -18,6 +18,14 @@ function Login() {
             setError("Login Failed. Please Try Again.")
             console.error(error)
         }
+    }
+    const handleGitHubLogin = () => {
+        const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID
+        window.location.href =
+            `https://github.com/login/oauth/authorize` +
+            `?client_id=${clientId}` +
+            `&scope=user:email` +
+            `&redirect_uri=http://localhost:5173/github/callback`
     }
 
     return (
@@ -48,10 +56,16 @@ function Login() {
                     </div>
                 </div>
                 <div className="mt-8 flex justify-center">
-                    <GoogleLogin 
+                    <GoogleLogin
                         onSuccess={handleSuccess}
                         onError={() => setError("Google Login Failed")}
                     />
+                    <button
+                        onClick={handleGitHubLogin}
+                        className="mt-4 w-full bg-white text-black py-3 rounded-xl font-semibold hover:opacity-90 transition"
+                    >
+                        Continue With GitHub
+                    </button>
                 </div>
             </div>
             {error && (

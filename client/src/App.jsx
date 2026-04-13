@@ -8,6 +8,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx"
 import ProtectedLayout from "./Layout/ProtectedLayout.jsx"
 import PublicRoute from "./routes/PublicRoute.jsx"
 import Profile from "./Pages/Profile.jsx"
+import GitHubCallback from "./components/GitHubCallback.jsx"
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
+          <Route path="/github/callback" element={<PublicRoute><GitHubCallback/></PublicRoute>} />
           <Route
             element={
               <ProtectedRoute>

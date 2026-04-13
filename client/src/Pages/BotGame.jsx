@@ -120,7 +120,7 @@ function BotGame() {
                                 Game Over
                             </p>
                             <button
-                                onClick={() => dispatch({ type: "RESET" })}
+                                onClick={() => dispatch({ type: "RESTART_MATCH" })}
                                 className="w-full bg-black text-white py-2 rounded-lg cursor-pointer"
                             >
                                 Play Again

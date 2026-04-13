@@ -10,6 +10,7 @@ func AuthRoutes(r *gin.Engine) {
 	auth := r.Group("/api/auth")
 	{
 		auth.POST("/google",handlers.GoogleLogin)
+		auth.POST("/github",handlers.GitHubLogin)
 		auth.POST("/refresh",handlers.RefreshAccessToken)
 		auth.POST("/logout",handlers.Logout)
 		auth.GET("/me",handlers.Me)
