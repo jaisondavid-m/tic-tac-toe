@@ -63,6 +63,10 @@ function reducer( state , action ) {
             const draw = !winner && state.board.every(Boolean)
 
             if((winner||draw) && !state.showResult) {
+                const today = new Date().toISOString().slice(0,10)
+                const history = JSON.parse(localStorage.getItem("ttt_history") || "{}")
+                history[today] = (history[today] || 0 ) + 1
+                localStorage.setItem("ttt_history",JSON.stringify(history))
                 setTimeout(() => {
                     action.dispatch?.({ type: "SHOW_RESULT" })
                 }, 2000);
