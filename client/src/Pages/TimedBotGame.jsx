@@ -14,6 +14,7 @@ function TimedBotGame() {
 
     const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS)
     const timeRef = useRef(null)
+    const isGameOver = winner || draw || state.showResult
 
     const clearTimer = () => {
         if (timeRef.current) {
@@ -50,7 +51,14 @@ function TimedBotGame() {
             clearTimer()
             return
         }
-        if (turn === HUMAN && state.gameStarted) {
+        if (isGameOver) {
+            clearTimer()
+            return
+        }
+
+        if (!state.gameStarted) return
+
+        if (turn === HUMAN) {
             startTimer()
         } else if (turn === BOT) {
             clearTimer()
@@ -60,7 +68,7 @@ function TimedBotGame() {
             return () => clearTimer(t)
         }
         return () => clearTimer
-    }, [board, turn, winner, draw, state.gameStarted])
+    }, [board, turn, winner, draw, state.gameStarted, state.showResult])
 
     useEffect(() => () => clearTimer(), [])
 
