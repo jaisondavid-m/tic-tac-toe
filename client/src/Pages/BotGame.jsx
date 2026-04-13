@@ -8,7 +8,7 @@ import NavBar from "../components/NavBar.jsx"
 
 function BotGame() {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const { board, turn, winner, draw } = state
+    const { board, turn, winner, draw , winningLine } = state
     const handleMove = (i) => {
         if (turn !== HUMAN || winner || draw) return
         dispatch({ type: "MOVE", index: i })
@@ -21,7 +21,7 @@ function BotGame() {
     }
 
     useEffect(() => {
-        dispatch({ type: "UPDATE" })
+        dispatch({ type: "UPDATE" , dispatch })
         if (!winner && !draw && turn === BOT) {
             const t = setTimeout(() => {
                 dispatch({ type: "BOT_MOVE" })
@@ -83,7 +83,7 @@ function BotGame() {
                         </div>
                     </div>
                     <div className="mt-5 text-center">
-                        <Board board={board} onMove={handleMove} />
+                        <Board board={board} onMove={handleMove} winningLine={winningLine} />
                     </div>
                     <div className="mt-5 text-center">
                         <p className="text-gray-700 font-medium">{status}</p>
@@ -104,7 +104,7 @@ function BotGame() {
                     </div>
 
                 </div>
-                {(winner || draw) && (
+                {(state.showResult) && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                         <div className="bg-white w-72 p-6 rounded-2xl text-center shadow-2xl">
                             <h2 className="text-xl font-bold mb-2">

@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext.jsx"
 import ProtectedRoute from "./routes/ProtectedRoute.jsx"
 import ProtectedLayout from "./Layout/ProtectedLayout.jsx"
 import PublicRoute from "./routes/PublicRoute.jsx"
+import Profile from "./Pages/Profile.jsx"
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
               </ProtectedRoute>
             }
           >
+            <Route path="/profile" element={<Profile/>} />
             <Route path="/home" element={<Home />} />
             <Route path="/bot" element={<BotGame />} />
           </Route>

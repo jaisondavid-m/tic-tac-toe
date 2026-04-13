@@ -11,6 +11,7 @@ export const initialState = {
     difficulty: "MEDIUM",
     gameStarted: false,
     showResult: false,
+    winningLine: null,
 }
 
 function reducer( state , action ) {
@@ -27,6 +28,7 @@ function reducer( state , action ) {
                 ...initialState,
                 gameStarted: false,
                 showResult: false,
+                winningLine: null
             }
         case "RESTART_MATCH":
             return {
@@ -35,7 +37,8 @@ function reducer( state , action ) {
                 turn: HUMAN,
                 winner: null,
                 draw:false,
-                showResult:false
+                showResult:false,
+                winningLine: null,
             }
         case "MOVE": {
             if (state.board[action.index] || state.winner) return state
@@ -56,9 +59,20 @@ function reducer( state , action ) {
             return { ...state , difficulty: action.value }
         case "UPDATE": {
             const winner = CalculateWinner(state.board)
+            const winningLine = winner ? CalculateWinner(state.board,true) : null
             const draw = !winner && state.board.every(Boolean)
-            return { ...state , winner , draw , showResult: !!winner || draw }
+
+            if((winner||draw) && !state.showResult) {
+                setTimeout(() => {
+                    action.dispatch?.({ type: "SHOW_RESULT" })
+                }, 2000);
+            }
+            
+            return { ...state , winner , draw , winningLine }
         }
+
+        case "SHOW_RESULT":
+            return { ...state , showResult: true }
         
         default:
             return state
