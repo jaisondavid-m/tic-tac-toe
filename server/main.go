@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"os"
 	"server/routes"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -16,18 +18,30 @@ func main() {
 	if err != nil {
 		log.Println("No .env file Found")
 	}
-	
-	r := gin.Default()
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		frontendURL = "http://localhost:5173"
+	}
+	gin.SetMode(gin.ReleaseMode)
+	// r := gin.Default()
+	r := gin.New()
+	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:5173"},
+		AllowOrigins: []string{frontendURL},
 		AllowMethods: []string{"GET","POST","PUT","DELETE","OPTIONS"},
 		AllowHeaders: []string{"Origin","Content-Type","Authorization"},
 		AllowCredentials: true,
+		MaxAge: 12*time.Hour,
 	}))
 	routes.TestRoutes(r)
 	routes.AuthRoutes(r)
 	// routes.WebsocketRoutes(r)
 	routes.MultiplayerRoutes(r)
 
-	r.Run(":8000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
+	r.Run(":" + port)
 }

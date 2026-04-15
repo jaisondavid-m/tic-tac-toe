@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { GoogleLogin } from "@react-oauth/google"
 import { useNavigate } from "react-router-dom"
 import { Gamepad2, Trophy, Zap } from "lucide-react"
-import { GoogleLoginAPI , GuestLoginAPI  } from "../api/axios.js"
+import { GoogleLoginAPI, GuestLoginAPI } from "../api/axios.js"
 import { useAuth } from "../context/AuthContext.jsx"
 import { FaGithub } from "react-icons/fa"
 
@@ -27,6 +27,15 @@ function Login() {
             `?client_id=${clientId}` +
             `&scope=user:email` +
             `&redirect_uri=http://localhost:5173/github/callback`
+    }
+    const handleHackClucLogin = () => {
+        const clientId = import.meta.env.VITE_SLACK_CLIENT_ID
+        window.location.href =
+            `https://hackatime.hackclub.com/oauth/authorize` +
+            `?client_id=${clientId}` +
+            `&response_type=code` +
+            `&scope=profile` +
+            `&redirect_uri=http://localhost:5173/hackclub/callback`
     }
     const handleGuestLogin = async () => {
         try {
@@ -79,6 +88,12 @@ function Login() {
                     >
                         <FaGithub size={20} />
                         Continue With GitHub
+                    </button>
+                    <button
+                        onClick={handleHackClucLogin}
+                        className="w-1/2 flex items-center justify-center gap-2 bg-[#611f69] text-white py-3 rounded-xl  font-semibold hover:opacity-90 transition"
+                    >
+                        Continue With Hack Club
                     </button>
                     <button
                         onClick={handleGuestLogin}

@@ -53,7 +53,7 @@ export default function Profile() {
                     <div className="mb-4 p-3 rounded-2xl border border-white/20 bg-white/10">
                         <Gamepad2 size={32} />
                     </div>
-                    <img src={user.picture} alt={user.name} className="w-24 h-24 rounded-full border-4 border-white object-cover" />
+                    <img src={user.picture} alt="Profile Not Found" className="w-24 h-24 rounded-full border-4 border-white object-cover" />
                     <h1 className="mt-4 text-3xl font-black tracking-widest">{user.name}</h1>
                     <p className="text-white/70 text-sm break-all">{user.email}</p>
                     <div className="mt-6 grid grid-cols-3 gap-3 w-full">

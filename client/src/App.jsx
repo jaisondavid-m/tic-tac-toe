@@ -9,6 +9,7 @@ import ProtectedLayout from "./Layout/ProtectedLayout.jsx"
 import PublicRoute from "./routes/PublicRoute.jsx"
 import Profile from "./Pages/Profile.jsx"
 import GitHubCallback from "./components/GitHubCallback.jsx"
+import HackClubCallback from "./components/HackClubCallback.jsx"
 import StreakPage from "./Pages/StreakPage.jsx"
 import NotFound from "./Pages/NotFound.jsx"
 import TimedBotGame from "./Pages/TimedBotGame.jsx"
@@ -25,6 +26,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/github/callback" element={<PublicRoute><GitHubCallback/></PublicRoute>} />
+          <Route path="/hackclub/callback" element={<PublicRoute><HackClubCallback/></PublicRoute>} />
           <Route
             element={
               <ProtectedRoute>

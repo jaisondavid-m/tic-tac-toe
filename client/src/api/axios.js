@@ -37,4 +37,8 @@ export const getAvailableRooms = async () => {
     return API.get("/rooms")
 }
 
+export const HackClubLoginAPI = async (code) => {
+    return API.post("/api/auth/hackclub",{code})
+}
+
 export default API

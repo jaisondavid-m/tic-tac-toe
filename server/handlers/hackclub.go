@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
+	// "fmt"
+	// "io"
 	"net/http"
 	"net/url"
 	"os"
@@ -14,13 +16,13 @@ import (
 )
 
 func HackClubLogin(c *gin.Context) {
-	
-	clientID := os.Getenv("SLACK_CLIENT_ID")
-	clientSecret := os.Getenv("SLACK_CLIENT_SECRET")
+
+	clientID := os.Getenv("HACKATIME_CLIENT_ID")
+	clientSecret := os.Getenv("HACKATIME_CLIENT_SECRET")
 
 	if clientID == "" || clientSecret == "" {
-		c.JSON(http.StatusInternalServerError,gin.H{
-			"message":"Slack OAuth not configured",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Hackatime OAuth not configured",
 		})
 		return
 	}
@@ -28,83 +30,115 @@ func HackClubLogin(c *gin.Context) {
 	var req models.HackClubLoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest,gin.H{
-			"message":"Code is required",
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Code is required",
 		})
 		return
 	}
-	
-	form := url.Values{}
-	form.Set("client_id",clientID)
-	form.Set("client_secret",clientSecret)
-	form.Set("code",req.Code)
 
-	tokenReq , _ := http.NewRequest(
+	tokenURL := "https://hackatime.hackclub.com/oauth/token"
+
+	form := url.Values{}
+	form.Set("client_id", clientID)
+	form.Set("client_secret", clientSecret)
+	form.Set("code", req.Code)
+	form.Set("grant_type", "authorization_code")
+	form.Set("redirect_uri", "http://localhost:5173/hackclub/callback")
+
+	tokenReq, err := http.NewRequest(
 		"POST",
-		"https://slack.com/api/oauth.v2.access",
+		// "https://hackatime.hackclub.com/api/oauth/token",
+		tokenURL,
 		strings.NewReader(form.Encode()),
 	)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Request Creation Failed",
+		})
+		return
+	}
 
-	tokenReq.Header.Set("Content-Type","application/x-www-form-urlencoded")
+	tokenReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
-	res , err := client.Do(tokenReq)
+	res, err := client.Do(tokenReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{
-			"message":"Slack Token Request Failed",
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Hackatime Token Request Failed",
 		})
 		return
 	}
 	defer res.Body.Close()
 
 	var tokenData map[string]interface{}
-	json.NewDecoder(res.Body).Decode(&tokenData)
+	if err := json.NewDecoder(res.Body).Decode(&tokenData); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Failed to decode token response",
+		})
+		return
+	}
 
-	accessToken , ok := tokenData["access_token"].(string)
+	ok := tokenData["access_token"] != nil
 	if !ok {
-		c.JSON(http.StatusUnauthorized,gin.H{
-			"message":"Slack Authentication Failed",
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Hackatime Authentication Failed",
 		})
 		return
 	}
-	userReq, _ := http.NewRequest(
-		"GET",
-		"https://slack.com/api/users.identity",
-		nil,
-	)
+	// userReq, _ := http.NewRequest(
+	// 	"GET",
+	// 	"https://hackatime.hackclub.com/",
+	// 	nil,
+	// )
 
-	userReq.Header.Set("Authorization","Bearer "+accessToken)
+	// userReq.Header.Set("Authorization", "Bearer "+accessToken)
+	// userReq.Header.Set("Accept", "application/json")
 
-	userRes,err := client.Do(userReq)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError,gin.H{
-			"message":"Failed to Fetch slack User",
-		})
-		return
-	}
-	defer userRes.Body.Close()
+	// userRes, err := client.Do(userReq)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message": "Failed to Fetch HackClub User",
+	// 	})
+	// 	return
+	// }
+	// fmt.Println("STATUS:", userRes.StatusCode)
+	// // fmt.Println("BODY:", string(bodyBytes))
+	// defer userRes.Body.Close()
 
-	var userData map[string]interface{}
-	json.NewDecoder(userRes.Body).Decode(&userData)
+	// var userData map[string]interface{}
+	// // json.NewDecoder(userRes.Body).Decode(&userData)
+	// bodyBytes, _ := io.ReadAll(userRes.Body)
+	// fmt.Println("raw_response:", string(bodyBytes))
+	// json.Unmarshal(bodyBytes, &userData)
 
-	user := userData["user"].(map[string]interface{})
+	// data, ok := userData["data"].(map[string]interface{})
+	// if !ok {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{
+	// 		"message":  "Invalid User Response",
+	// 		"response": userData,
+	// 	})
+	// 	return
+	// }
 
-	name,_ := user["name"].(string)
-	email,_ := user["email"].(string)
+	// name, _ := data["username"].(string)
+	// email, _ := data["email"].(string)
 
-	image := ""
-	if img, ok := user["image_192"].(string); ok {
-		image = img
-	}
+	// image := ""
+	// if img, ok := data["photo"].(string); ok {
+	// 	image = img
+	// }
 
-	jwtAccess, _ := utils.GenerateAccessToken(name,email,image)
-	jwtRefresh, _ := utils.GenerateRefreshToken("slack:" + email)
+	// fmt.Println("TOKEN:", tokenData)
+	// fmt.Println("USER:", userData)
 
-	c.SetCookie("refresh_token",jwtRefresh,60*60*24*60,"/","",false,true)
-	c.SetCookie("access_token",jwtAccess,60*60*24, "/","",false,true)
+	jwtAccess, _ := utils.GenerateAccessToken("hackclub_user", "hackclub_user", "")
+	jwtRefresh, _ := utils.GenerateRefreshToken("hackatime:" + "hackclub_user")
 
-	c.JSON(http.StatusOK,gin.H{
-		"message":"Hack Club Login Success",
+	c.SetCookie("refresh_token", jwtRefresh, 60*60*24*60, "/", "", false, true)
+	c.SetCookie("access_token", jwtAccess, 60*60*24, "/", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Hack Club Login Success",
 	})
 
 }
