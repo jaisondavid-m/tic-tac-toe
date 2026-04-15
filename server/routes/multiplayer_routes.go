@@ -6,5 +6,7 @@ import (
 )
 
 func MultiplayerRoutes(r *gin.Engine) {
+	r.POST("/room/create",handlers.CreateRoom)
+	r.GET("/rooms",handlers.GetRooms)
 	r.GET("/ws/:room",handlers.HandleWS)
 }

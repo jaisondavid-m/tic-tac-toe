@@ -8,7 +8,7 @@ function Multiplayer() {
     const [ player , setPlayer ] = useState(null)
     const [ turn , setTurn ] = useState("X")
     const [ winner , setWinner ] = useState(null)
-    // const [ winningLine , setWinningLine ] = 
+    const [ winningLine , setWinningLine ] = useState(null)
     const [ room , setRoom ] = useState("")
     const [ connected , setConnected ] = useState(false)
 
@@ -17,7 +17,7 @@ function Multiplayer() {
     const status = () => {
         if (!connected) return "Not Connected"
         if (winner === "draw") return "Draw"
-        if (winner) return winner === player ? "You Win !" : "You Loose !"
+        if (winner) return winner === player ? "You Win !" : "You Lose !"
         if (turn === player) return "Your Turn"
         return "Opponent Turn"
     }
@@ -40,6 +40,11 @@ function Multiplayer() {
                 setBoard(msg.board)
                 setTurn(msg.turn)
                 setWinner(msg.winner)
+                if (msg.winner && msg.winner !== "draw") {
+                    setWinningLine(CalculateWinner(msg.board,true))
+                } else {
+                    setWinningLine(null)
+                }
             }
             if (msg.type === "error") {
                 alert(msg.message)
@@ -104,7 +109,7 @@ function Multiplayer() {
                 <div className="bg-white p-6 rounded-xl shadow text-center">
                     <p className="mb-2">Room: {room}</p>
                     <p className="mb-2">You are: {player}</p>
-                    <Board board={board} onMove={handleMove} />
+                    <Board board={board} onMove={handleMove} winningLine={winningLine} />
                     <p className="mt-4 font-semibold">{status()}</p>
                 </div>
             )}
