@@ -33,9 +33,9 @@ func main() {
 			allowedOrigins = []string{"http://localhost:5173"}
 		}
 	}
-	gin.SetMode(gin.ReleaseMode)
-	// r := gin.Default()
-	r := gin.New()
+	// gin.SetMode(gin.ReleaseMode)
+	r := gin.Default()
+	// r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigins,
