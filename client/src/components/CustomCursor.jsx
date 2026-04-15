@@ -8,17 +8,32 @@ function CustomCursor() {
     const mouse = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
     const pos = useRef({ ...mouse.current })
     const [clicked, setClicked] = useState(false)
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
     useEffect(() => {
-        document.body.classList.add('cursor-none')
-        return () => document.body.classList.remove('cursor-none')
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768)
+        }
+
+        handleResize()
+        window.addEventListener("resize", handleResize)
+
+        return () => window.removeEventListener("resize", handleResize)
     }, [])
 
     useEffect(() => {
+        if (isMobile) return
+        document.body.classList.add("cursor-none")
+        return () => document.body.classList.remove("cursor-none")
+    }, [isMobile])
+
+    useEffect(() => {
+        if (isMobile) return
+
         const spawn = (x, y) => {
             for (let i = 0; i < 2; i++) {
-                const el = document.createElement('div')
-                el.className = `fixed w-4 h-4 bg-white rounded-sm pointer-events-none z-[99999] mix-blend-difference shadow-[0_0_12px_rgba(255,255,255,0.8)]`
+                const el = document.createElement("div")
+                el.className = "fixed w-4 h-4 bg-white rounded-sm pointer-events-none z-99999 mix-blend-difference shadow-[0_0_12px_rgba(255,255,255,0.8)]"
                 document.body.appendChild(el)
                 trails.current.push({ el, x: x - 4 + Math.random() * 8, y: y - 4 + Math.random() * 8, life: 1 })
             }
@@ -31,9 +46,9 @@ function CustomCursor() {
         const down = () => setClicked(true)
         const up = () => setClicked(false)
 
-        window.addEventListener('mousemove', move)
-        window.addEventListener('mousedown', down)
-        window.addEventListener('mouseup', up)
+        window.addEventListener("mousemove", move)
+        window.addEventListener("mousedown", down)
+        window.addEventListener("mouseup", up)
 
         let raf
         const animate = () => {
@@ -61,22 +76,26 @@ function CustomCursor() {
 
         return () => {
             cancelAnimationFrame(raf)
-            window.removeEventListener('mousemove',move)
-            window.removeEventListener('mousedown',down)
-            window.removeEventListener('mouseup',up)
+            window.removeEventListener("mousemove", move)
+            window.removeEventListener("mousedown", down)
+            window.removeEventListener("mouseup", up)
         }
 
-    },[])
+    }, [isMobile])
+
+    if (isMobile) {
+        return null
+    }
 
     return (
         <div className="block">
             <div
                 ref={ringRef}
-                className="fixed top-0 left-0 w-16 h-16 rounded-full border-2 border-black pointer-events-none z-[99999] mix-blend-difference shadow-[0_0_20px_rgba(255,255,255,0.8),inset_0_0_12px_rgba(255,255,255,0.25)]"
+                className="fixed top-0 left-0 w-16 h-16 rounded-full border-2 border-black pointer-events-none z-99999 mix-blend-difference shadow-[0_0_20px_rgba(255,255,255,0.8),inset_0_0_12px_rgba(255,255,255,0.25)]"
             />
             <div
                 ref={dotRef}
-                className="fixed top-0 left-0 w-5 h-5 rounded-full bg-black pointer-events-none z-[99999] mix-blend-difference shadow-[0_0_10px_rgba(255,255,255,0.9)] transition-transform duration-75 "
+                className="fixed top-0 left-0 w-5 h-5 rounded-full bg-black pointer-events-none z-99999 mix-blend-difference shadow-[0_0_10px_rgba(255,255,255,0.9)] transition-transform duration-75 "
             />
         </div>
     )
