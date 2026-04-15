@@ -48,3 +48,5 @@ A modern Tic Tac Toe Game with **Bot Mode**,**real-time Multiplayer (websocket)*
 ## Tech
 - Frontend: React JS
 - Backend: Go (WebSocket + Gin)
+##Note
+- Currently Not Available for Moblie
