@@ -29,4 +29,12 @@ export const MeAPI = () => {
     return API.get("/api/auth/me")
 }
 
+export const CreateRoom = () => {
+    return API.post("/room/create")
+}
+
+export const getAvailableRooms = async () => {
+    return API.get("/rooms")
+}
+
 export default API
