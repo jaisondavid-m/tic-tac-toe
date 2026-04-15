@@ -29,7 +29,7 @@ func Me(c *gin.Context) {
 		})
 		return
 	}
-
+	
 	claims , ok := token.Claims.(jwt.MapClaims)
 
 	if !ok {

@@ -12,6 +12,9 @@ import GitHubCallback from "./components/GitHubCallback.jsx"
 import StreakPage from "./Pages/StreakPage.jsx"
 import NotFound from "./Pages/NotFound.jsx"
 import TimedBotGame from "./Pages/TimedBotGame.jsx"
+import BotPage from "./Pages/BotPage.jsx"
+// import WebSocketTest from "./components/WebSocketTest.jsx"
+import Multiplayer from "./Pages/Multiplayer.jsx"
 
 export default function App() {
   return (
@@ -27,10 +30,13 @@ export default function App() {
               </ProtectedRoute>
             }
           >
+            {/* <Route path="/websocketdemo" element={<WebSocketTest/>} /> */}
             <Route path="/profile" element={<Profile/>} />
             <Route path="/home" element={<Home />} />
-            <Route path="/bot" element={<BotGame />} />
+            <Route path="/bot" element={<BotPage/>} />
+            <Route path="/normalbot" element={<BotGame />} />
             <Route path="/timedbot" element={<TimedBotGame/>} />
+            <Route path="/multiplayer" element={<Multiplayer/>} />
             <Route path="/streak" element={<StreakPage/>} />
           </Route>
 

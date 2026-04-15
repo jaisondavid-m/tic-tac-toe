@@ -15,7 +15,6 @@ function NavBar() {
         { name: "Home" , path: "/" },
         { name: "Profile" , path: "/profile" },
         { name: "Play with Bot" , path: "/bot" },
-        { name: "Play with Bot (Timer Version)" , path: "/timedbot" },
         { name: "Streak" , path: "/streak" },
     ]
 

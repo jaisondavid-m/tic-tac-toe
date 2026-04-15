@@ -16,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Println("No .env file Found")
 	}
-
+	
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:5173"},
@@ -26,6 +26,8 @@ func main() {
 	}))
 	routes.TestRoutes(r)
 	routes.AuthRoutes(r)
+	// routes.WebsocketRoutes(r)
+	routes.MultiplayerRoutes(r)
 
 	r.Run(":8000")
 }
