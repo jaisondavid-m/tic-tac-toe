@@ -17,8 +17,14 @@ type Message struct {
 	Winner 		string 		`json:"winner"`
 }
 
+type Player struct {
+	Conn 		*websocket.Conn
+	Symbol 		string
+	ClientID 	string
+}
+
 type Room struct {
-	Clients map[*websocket.Conn]string
+	Players map[string]*Player
 	Board [9]string
 	Turn string
 	Mutex sync.Mutex

@@ -13,8 +13,9 @@ function NavBar() {
 
     const navLinks = [
         { name: "Home" , path: "/" },
-        { name: "Profile" , path: "/profile" },
+        { name: "MultiPlayer Mode" , path: "/multiplayer" },
         { name: "Play with Bot" , path: "/bot" },
+        { name: "Profile" , path: "/profile" },
         { name: "Streak" , path: "/streak" },
     ]
 

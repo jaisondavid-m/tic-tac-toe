@@ -15,11 +15,13 @@ import TimedBotGame from "./Pages/TimedBotGame.jsx"
 import BotPage from "./Pages/BotPage.jsx"
 // import WebSocketTest from "./components/WebSocketTest.jsx"
 import Multiplayer from "./Pages/Multiplayer.jsx"
+import CustomCursor from "./components/CustomCursor.jsx"
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <CustomCursor/>
         <Routes>
           <Route path="/" element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/github/callback" element={<PublicRoute><GitHubCallback/></PublicRoute>} />

@@ -9,7 +9,6 @@ import (
 	"server/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
 )
 
 func CreateRoom(c *gin.Context) {
@@ -21,11 +20,11 @@ func CreateRoom(c *gin.Context) {
 		code := strconv.Itoa(1000 + rand.Intn(9000))
 
 		mu.Lock()
-		_ , exists := rooms[code]
+		_, exists := rooms[code]
 
 		if !exists {
 			rooms[code] = &models.Room{
-				Clients: map[*websocket.Conn]string{},
+				Players: map[string]*models.Player{},
 				Turn: "X",
 			}
 			mu.Unlock()

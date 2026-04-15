@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"sync"
+	"time"
 
 	"server/models"
 
@@ -22,7 +23,7 @@ func getRoom(id string) *models.Room {
 	mu.Lock()
 	defer mu.Unlock()
 	if rooms[id] == nil {
-		rooms[id] = &models.Room{Clients: map[*websocket.Conn]string{}, Turn: "X"}
+		rooms[id] = &models.Room{Players: map[string]*models.Player{}, Turn: "X"}
 	}
 	return rooms[id]
 }
@@ -30,6 +31,15 @@ func getRoom(id string) *models.Room {
 func HandleWS(c *gin.Context) {
 
 	roomID := c.Param("room")
+	clientID := c.Query("clientId")
+
+	if clientID == "" {
+		c.JSON(http.StatusBadRequest,gin.H{
+			"error":"ClientId is required",
+		})
+		return
+	}
+
 	room := getRoom(roomID)
 
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -38,45 +48,71 @@ func HandleWS(c *gin.Context) {
 	}
 
 	room.Mutex.Lock()
-	if len(room.Clients) >= 2 {
+	if len(room.Players) >= 2 && room.Players[clientID] == nil {
 		room.Mutex.Unlock()
 		conn.WriteMessage(websocket.TextMessage,[]byte(`{"type":"error","message":"Room Full"}`))
 		conn.Close()
 		return
 	}
-	player := "X"
-	if len(room.Clients) == 1 {
-		player = "O"
+
+	symbol := "X"
+
+	// if len(room.Players) == 1 {
+	// 	symbol = "O"
+	// }
+	if old,ok := room.Players[clientID]; ok {
+		symbol = old.Symbol
+	} else if len(room.Players) == 1 {
+		symbol = "O"
 	}
-	room.Clients[conn] = player
+	room.Players[clientID] = &models.Player{
+		Conn: conn,
+		Symbol: symbol,
+		ClientID: clientID,
+	}
 	room.Mutex.Unlock()
 
-	send(conn, models.Message{Type: "init", Player: player, Turn: room.Turn, Board: toSlice(room.Board)})
+	send(conn, models.Message{Type: "init", Player: symbol, Turn: room.Turn, Board: toSlice(room.Board)})
 	broadcast(room)
 
 	for {
 		_, data, err := conn.ReadMessage()
 		if err != nil {
-			room.Mutex.Lock()
-			delete(room.Clients, conn)
-			empty := len(room.Clients) == 0
-			room.Mutex.Unlock()
 			conn.Close()
-			if empty {
-				mu.Lock()
-				delete(rooms,roomID)
-				mu.Unlock()
-			}
-			// conn.Close()
+			go func() {
+				time.Sleep(5*time.Second)
+				room.Mutex.Lock()
+				delete(room.Players,clientID)
+				empty := len(room.Players) == 0
+				room.Mutex.Unlock()
+
+				if empty {
+					mu.Lock()
+					delete(rooms,roomID)
+					mu.Unlock()
+				}
+			}()
 			break
+			// room.Mutex.Lock()
+			// delete(room.Clients, conn)
+			// empty := len(room.Clients) == 0
+			// room.Mutex.Unlock()
+			// conn.Close()
+			// if empty {
+			// 	mu.Lock()
+			// 	delete(rooms,roomID)
+			// 	mu.Unlock()
+			// }
+			// // conn.Close()
+			// break
 		}
 		var msg models.Message
 		json.Unmarshal(data, &msg)
 
 		if msg.Type == "move" {
 			room.Mutex.Lock()
-			if room.Board[msg.Index] == "" && room.Turn == room.Clients[conn] && checkWinner(room.Board) == "" {
-				room.Board[msg.Index] = room.Turn
+			if room.Board[msg.Index] == "" && room.Turn == room.Players[clientID].Symbol && checkWinner(room.Board) == "" {
+				room.Board[msg.Index] = room.Players[clientID].Symbol
 				if room.Turn == "X" {
 					room.Turn = "O"
 				} else {
@@ -105,8 +141,8 @@ func HandleWS(c *gin.Context) {
 func broadcast(room *models.Room) {
 	winner := checkWinner(room.Board)
 	msg := models.Message{Type: "state", Board: toSlice(room.Board), Turn: room.Turn, Winner: winner}
-	for c := range room.Clients {
-		send(c, msg)
+	for _ , p := range room.Players {
+		send(p.Conn , msg)
 	}
 }
 

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react"
+// import QRCode from "react-qr-code"
 import Board from "../components/Board.jsx"
 import GameLayout from "../Layout/GameLayout.jsx"
 import CalculateWinner from "../utils/CalculateWinner.jsx"
 import { CreateRoom, getAvailableRooms } from "../api/axios.js"
+import ShareRoom from "../components/ShareRoom.jsx"
 
 function Multiplayer() {
     const [board, setBoard] = useState(Array(9).fill(null))
@@ -13,8 +15,33 @@ function Multiplayer() {
     const [room, setRoom] = useState("")
     const [connected, setConnected] = useState(false)
     const [availableRooms, setAvailableRooms] = useState([])
+    const [copied,setCopied] = useState(false)
+    const [showQR,setShowQR] = useState(false)
 
     const ws = useRef(null)
+
+    const roomLink = `${window.location.origin}/multiplayer?room=${room}`
+
+    const copyRoomLink = async () => {
+        await navigator.clipboard.writeText(roomLink)
+        setCopied(true)
+        setTimeout(() => {
+            setCopied(false)
+        }, 2000);
+    }
+
+    const exitRoom = () => {
+        ws.current?.close()
+        setConnected(false)
+        setPlayer(null)
+        setBoard(Array(9).fill(null))
+        setWinner(null)
+        setWinningLine(null)
+        setTurn("X")
+        setRoom("")
+        localStorage.removeItem("ttt_room")
+        localStorage.removeItem("ttt_player")
+    }
 
     const status = () => {
         if (!connected) return "Not Connected"
@@ -28,8 +55,15 @@ function Multiplayer() {
 
         const protocol = window.location.protocol === "https:" ? "wss" : "ws"
 
+        let clientId = localStorage.getItem("ttt_clientId")
+
+        if(!clientId) {
+            clientId = crypto.randomUUID()
+            localStorage.setItem("ttt_clientId",clientId)
+        }
+
         ws.current = new WebSocket(
-            `${protocol}://localhost:8000/ws/${roomdId}`
+            `${protocol}://localhost:8000/ws/${roomdId}?clientId=${clientId}`
         )
 
         setRoom(roomdId)
@@ -45,6 +79,8 @@ function Multiplayer() {
                 setPlayer(msg.player)
                 setBoard(msg.board)
                 setTurn(msg.turn)
+                localStorage.setItem("ttt_room",roomdId)
+                localStorage.setItem("ttt_player",msg.player)
             }
             if (msg.type === "state") {
                 setBoard(msg.board)
@@ -62,8 +98,6 @@ function Multiplayer() {
 
         }
 
-
-
         ws.current.onopen = () => {
             setConnected(true)
         }
@@ -71,6 +105,8 @@ function Multiplayer() {
         ws.current.onclose = () => {
             setConnected(false)
             setPlayer(null)
+            // localStorage.removeItem("ttt_room")
+            // localStorage.removeItem("ttt_player")
         }
     }
     const connect = () => {
@@ -116,11 +152,15 @@ function Multiplayer() {
             ws.current?.close()
         }
     }, [])
+
     useEffect(() => {
         const params = new URLSearchParams(window.location.search)
         const roomFromUrl = params.get("room")
+        const savedRoom = localStorage.getItem("ttt_room")
         if (roomFromUrl) {
             connectWithRoom(roomFromUrl)
+        } else if (savedRoom) {
+            connectWithRoom(savedRoom)
         }
     }, [])
 
@@ -171,8 +211,42 @@ function Multiplayer() {
                     </div>
                 </div>
             ) : (
-                <div className="w-full max-w-md bg-white/90 backdrop-blur-xl border border-gray-200 p-6 rounded-3xl shadow-2xl text-center">
-                    <button
+                <div
+                 className={`w-full max-w-md mx-auto bg-white/90 backdrop-blur-xl border border-gray-200 p-6 rounded-2xl shadow-2xl text-center ${showQR ? "mt-24" : ""}`}
+                 >
+                    <ShareRoom
+                        roomLink={roomLink}
+                        copied={copied}
+                        showQR={showQR}
+                        copyRoomLink={copyRoomLink}
+                        setShowQR={setShowQR}
+                    />
+                    {/* <div className="flex gap-2 mb-4">
+                        <button
+                            onClick={copyRoomLink}
+                            className="w-full bg-blue-600 text-white py-3 rounded-2xl font-semibold hover:scale-[1.02] transition"
+                        >
+                            Copy Link
+                        </button>
+                        <button
+                            onClick={() => setShowQR(!showQR)}
+                            className="w-full bg-violet-600 text-white py-3 rounded-2xl font-semibold hover:scale-[1.02] transition"
+                        >
+                            QR Code
+                        </button>
+                    </div>
+                    {copied && (
+                        <div className="mb-4 bg-green-100 text-green-700 py-2 rounded-xl text-sm font-semibold">
+                            Link Copied SuccessFully !!
+                        </div>
+                    )}
+                    {showQR && (
+                        <div className="mb-4 bg-white border rounded-2xl p-4 flex flex-col items-center">
+                            <QRCode value={roomLink} size={180} />
+                            <p className="text-xs text-gray-500 mt-3 break-all">{roomLink}</p>
+                        </div>
+                    )} */}
+                    {/* <button
                         onClick={() => {
                             navigator.clipboard.writeText(
                                 `${window.location.origin}/multiplayer?room=${room}`
@@ -181,13 +255,19 @@ function Multiplayer() {
                         className="w-full bg-blue-600 text-white py-3 rounded-2xl font-semibold mb-4 hover:scale-[1.02] transition"
                     >
                         Share Room Link
-                    </button>
-                    <div className="flex justify-between text-sm text-gray-600 mb-4">
-                        <p className="mb-2">Room: {room}</p>
-                        <p className="mb-2">You are: {player}</p>
+                    </button> */}
+                    <div className="flex justify-between text-sm text-gray-600 mb-4 bg-gray-50 p-3 rounded-2xl">
+                        <p className="mb-2">Room: <span className="font-bold">{room}</span></p>
+                        <p className="mb-2">You are: <span className="font-bold">{player}</span></p>
                     </div>
                     <Board board={board} onMove={handleMove} winningLine={winningLine} />
                     <p className="mt-5 text-lg font-bold text-gray-800">{status()}</p>
+                    <button
+                        onClick={exitRoom}
+                        className="mt-4 w-full bg-red-500 text-white py-3 rounded-2xl font-semibold hover:scale-[1.02] transition"
+                    >
+                        Exit Room
+                    </button>
                 </div>
             )}
         </GameLayout>
