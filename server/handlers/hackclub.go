@@ -134,8 +134,8 @@ func HackClubLogin(c *gin.Context) {
 	jwtAccess, _ := utils.GenerateAccessToken("hackclub_user", "hackclub_user", "")
 	jwtRefresh, _ := utils.GenerateRefreshToken("hackatime:" + "hackclub_user")
 
-	c.SetCookie("refresh_token", jwtRefresh, 60*60*24*60, "/", "", false, true)
-	c.SetCookie("access_token", jwtAccess, 60*60*24, "/", "", false, true)
+	setAuthCookie(c, "refresh_token", jwtRefresh, 60*60*24*60)
+	setAuthCookie(c, "access_token", jwtAccess, 60*60*24)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Hack Club Login Success",

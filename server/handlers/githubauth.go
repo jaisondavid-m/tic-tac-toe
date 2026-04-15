@@ -165,8 +165,8 @@ func GitHubLogin(c *gin.Context) {
 	jwtAccess, _ := utils.GenerateAccessToken(name, email, picture)
 	jwtRefresh, _ := utils.GenerateRefreshToken("github:" + fmt.Sprintf("%v", id))
 
-	c.SetCookie("refresh_token", jwtRefresh, 60*60*24*60, "/", "", false, true)
-	c.SetCookie("access_token", jwtAccess, 60*60*24, "/", "", false, true)
+	setAuthCookie(c, "refresh_token", jwtRefresh, 60*60*24*60)
+	setAuthCookie(c, "access_token", jwtAccess, 60*60*24)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "GitHub Login Success",
