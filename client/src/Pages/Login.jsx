@@ -79,30 +79,33 @@ function Login() {
                         <p className="text-xs text-white/70">Challenge Bot</p>
                     </div>
                 </div>
-                <div className="mt-8 flex flex-col gap-4 items-center w-full">
+                <div className="mt-8 flex flex-col gap-4 items-center w-full rounded-xl">
                     <div className="w-full flex justify-center">
-                        <GoogleLogin
-                            onSuccess={handleSuccess}
-                            onError={() => setError("Google Login Failed")}
-                        />
+                        <div className="w-full">
+                            <GoogleLogin
+                                onSuccess={handleSuccess}
+                                onError={() => setError("Google Login Failed")}
+                                size="large"
+                            />
+                        </div>
                     </div>
 
                     <button
                         onClick={handleGitHubLogin}
-                        className="w-1/2 flex items-center justify-center gap-2 bg-white text-black py-3 rounded-xl font-semibold hover:opacity-90 transition tracking-tighter"
+                        className="w-full flex items-center justify-center gap-2 bg-white text-black py-3 rounded-xl font-semibold hover:opacity-90 transition tracking-tighter"
                     >
                         <FaGithub size={20} />
                         Continue With GitHub
                     </button>
                     <button
                         onClick={handleHackClucLogin}
-                        className="w-1/2 flex items-center justify-center gap-2 bg-[#611f69] text-white py-3 rounded-xl  font-semibold hover:opacity-90 transition"
+                        className="w-full flex items-center justify-center gap-2 bg-[#611f69] text-white py-3 rounded-xl  font-semibold hover:opacity-90 transition"
                     >
                         Continue With Hack Club
                     </button>
                     <button
                         onClick={handleGuestLogin}
-                        className="w-1/2 flex items-center justify-center gap-2 border border-white/20 py-3 rounded-xl font-semibold hover:bg-white/10 transition"
+                        className="w-full flex items-center justify-center gap-2 border border-white/20 py-3 rounded-xl font-semibold hover:bg-white/10 transition"
                     >
                         Continue as Guest
                     </button>

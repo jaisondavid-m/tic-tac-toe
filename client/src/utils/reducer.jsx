@@ -79,7 +79,7 @@ function reducer( state , action ) {
                 localStorage.setItem("ttt_history",JSON.stringify(history))
                 setTimeout(() => {
                     action.dispatch?.({ type: "SHOW_RESULT" })
-                }, 2000);
+                }, 500);
             }
             
             return { ...state , winner , draw , winningLine }
