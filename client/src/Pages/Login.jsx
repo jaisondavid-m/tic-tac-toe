@@ -10,6 +10,9 @@ function Login() {
     const navigate = useNavigate()
     const [error, setError] = useState("")
     const { checkAuth } = useAuth()
+    const frontendUrl =
+        (import.meta.env.VITE_FRONTEND_URL || window.location.origin).replace(/\/$/, "")
+
     const handleSuccess = async (credentialResponse) => {
         try {
             await GoogleLoginAPI(credentialResponse.credential)
@@ -22,20 +25,22 @@ function Login() {
     }
     const handleGitHubLogin = () => {
         const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID
+        const redirectUri = encodeURIComponent(`${frontendUrl}/github/callback`)
         window.location.href =
             `https://github.com/login/oauth/authorize` +
             `?client_id=${clientId}` +
             `&scope=user:email` +
-            `&redirect_uri=http://localhost:5173/github/callback`
+            `&redirect_uri=${redirectUri}`
     }
     const handleHackClucLogin = () => {
         const clientId = import.meta.env.VITE_SLACK_CLIENT_ID
+        const redirectUri = encodeURIComponent(`${frontendUrl}/hackclub/callback`)
         window.location.href =
             `https://hackatime.hackclub.com/oauth/authorize` +
             `?client_id=${clientId}` +
             `&response_type=code` +
             `&scope=profile` +
-            `&redirect_uri=http://localhost:5173/hackclub/callback`
+            `&redirect_uri=${redirectUri}`
     }
     const handleGuestLogin = async () => {
         try {

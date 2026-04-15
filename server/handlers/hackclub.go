@@ -27,6 +27,12 @@ func HackClubLogin(c *gin.Context) {
 		return
 	}
 
+	frontendURL := strings.TrimSpace(os.Getenv("FRONTEND_URL"))
+	if frontendURL == "" {
+		frontendURL = "http://localhost:5173"
+	}
+	frontendURL = strings.TrimSuffix(frontendURL, "/")
+
 	var req models.HackClubLoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -43,7 +49,7 @@ func HackClubLogin(c *gin.Context) {
 	form.Set("client_secret", clientSecret)
 	form.Set("code", req.Code)
 	form.Set("grant_type", "authorization_code")
-	form.Set("redirect_uri", "http://localhost:5173/hackclub/callback")
+	form.Set("redirect_uri", frontendURL+"/hackclub/callback")
 
 	tokenReq, err := http.NewRequest(
 		"POST",
