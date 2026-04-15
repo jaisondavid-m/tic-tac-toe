@@ -53,6 +53,8 @@ function Multiplayer() {
 
     const connectWithRoom = (roomdId) => {
 
+        const WS_URL = import.meta.env.VITE_WS_URL
+
         const protocol = window.location.protocol === "https:" ? "wss" : "ws"
 
         let clientId = localStorage.getItem("ttt_clientId")
@@ -63,7 +65,7 @@ function Multiplayer() {
         }
 
         ws.current = new WebSocket(
-            `${protocol}://localhost:8000/ws/${roomdId}?clientId=${clientId}`
+            `${WS_URL}/ws/${roomdId}?clientId=${clientId}`
         )
 
         setRoom(roomdId)
