@@ -9,13 +9,13 @@ function NavBar() {
     const [ open , setOpen ] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
-    // const { setUser } = useAuth()
+    const { setUser } = useAuth()
 
     const navLinks = [
         { name: "Home" , path: "/" },
         { name: "MultiPlayer Mode" , path: "/multiplayer" },
         { name: "Play with Bot" , path: "/bot" },
-        // { name: "Profile" , path: "/profile" },
+        { name: "Profile" , path: "/profile" },
         { name: "Streak" , path: "/streak" },
     ]
 
