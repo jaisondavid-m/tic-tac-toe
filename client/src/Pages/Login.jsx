@@ -97,12 +97,12 @@ function Login() {
                         <FaGithub size={20} />
                         Continue With GitHub
                     </button>
-                    <button
+                    {/* <button
                         onClick={handleHackClucLogin}
                         className="w-full flex items-center justify-center gap-2 bg-[#611f69] text-white py-3 rounded-xl  font-semibold hover:opacity-90 transition"
                     >
                         Continue With Hack Club
-                    </button>
+                    </button> */}
                     <button
                         onClick={handleGuestLogin}
                         className="w-full flex items-center justify-center gap-2 border border-white/20 py-3 rounded-xl font-semibold hover:bg-white/10 transition"
