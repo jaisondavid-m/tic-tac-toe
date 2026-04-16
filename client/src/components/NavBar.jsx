@@ -3,7 +3,7 @@ import { Link , useLocation , useNavigate } from "react-router-dom"
 import { Menu , X , Gamepad2 } from "lucide-react"
 import { motion , AnimatePresence } from "framer-motion"
 import { LogoutAPI } from "../api/axios"
-// import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/AuthContext"
 
 function NavBar() {
     const [ open , setOpen ] = useState(false)
@@ -21,15 +21,15 @@ function NavBar() {
 
     const isActive = ( path ) => location.pathname === path
 
-    // const handleLogout = async () => {
-    //     try {
-    //         await LogoutAPI()
-    //         setUser(null)
-    //         navigate("/login")
-    //     } catch (error) {
-    //         console.error(error)
-    //     }
-    // }
+    const handleLogout = async () => {
+        try {
+            await LogoutAPI()
+            setUser(null)
+            navigate("/login")
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <motion.header
@@ -90,12 +90,12 @@ function NavBar() {
                             Start Game
                         </Link>
                     </motion.div>
-                    {/* <button
+                    <button
                         onClick={handleLogout}
                         className="hidden md:block ml-2 px-4 py-1.5 rounded-full border border-white/20 text-white text-xs md:text-sm font-semibold hover:bg-white/10 transition"
                     >
                         Logout
-                    </button> */}
+                    </button>
                     <button
                         onClick={() => setOpen(!open) }
                         className="md:hidden text-white"
@@ -146,12 +146,12 @@ function NavBar() {
                                     Start Game
                                 </Link>
                             </motion.div>
-                            {/* <button
+                            <button
                                 onClick={handleLogout}
                                 className="block w-full text-center px-4 py-3 rounded-xl border border-white/20 text-white font-semibold hover:bg-white/10 transition"
                             >
                                 LogOut
-                            </button> */}
+                            </button>
                         </div>
                     </motion.div>
                 )}
