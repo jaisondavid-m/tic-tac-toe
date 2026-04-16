@@ -24,7 +24,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <CustomCursor/>
-        <NavBar/>
+        {/* <NavBar/> */}
         <Routes>
           <Route path="/" element={<PublicRoute><Login /></PublicRoute>} /> 
           <Route path="/github/callback" element={<PublicRoute><GitHubCallback/></PublicRoute>} />
