@@ -26,6 +26,7 @@ A modern Tic Tac Toe Game with **Bot Mode**,**real-time Multiplayer (websocket)*
 - **Guest Login**
 - **Profile Page** (show your basic info after login)
 - Session handling (keeps you logged in and supports logout)
+- login system will not work in incognito mode
 
 ### Streak / Activity
 - **Streak Page** that tracks your daily play activity
